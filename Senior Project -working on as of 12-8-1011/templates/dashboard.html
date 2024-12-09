@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+        a { color: white; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard</h1>
+
+    <h2>Your Giveaways</h2>
+    <ul>
+        {% for giveaway in giveaways %}
+        <li>
+            <strong>{{ giveaway.title }}</strong> (ID: {{ giveaway.id }})<br>
+            Duration: {{ giveaway.duration }} seconds<br>
+            Frequency: {{ giveaway.frequency }} seconds<br>
+            <button>
+                <a href="/giveaway/edit/{{ giveaway.id }}">Edit Giveaway</a>
+            </button>
+            <button>
+                <a href="/giveaway/start/{{ giveaway.id }}">Start Giveaway</a>
+            </button>
+            <button>
+                <a href="/giveaway/delete/{{ giveaway.id }}">Delete Giveaway</a>
+            </button>
+            
+        </li>
+        {% else %}
+        <li>No giveaways found.</li>
+        {% endfor %}
+    </ul>    
+
+    <button>
+        <a href="/giveaway/create">Create New Giveaway</a>
+    </button>
+
+    <button>
+        <a href="/winnings">View Your Winnings</a>
+    </button>
+</body>
+</html>

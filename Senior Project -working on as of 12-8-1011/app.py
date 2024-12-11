@@ -24,7 +24,7 @@ chatbot_processes = {}
 
 @app.route("/")
 def home():
-    return '<a href="/auth/twitch">Log in with Twitch</a>'
+    return render_template("home.html")
 
 @app.route("/auth/twitch")
 def auth_twitch():
@@ -67,10 +67,14 @@ def auth_twitch_callback():
         # Use the access token to fetch user data
         user_response = requests.get(
             "https://api.twitch.tv/helix/users",
-            headers={"Authorization": f"Bearer {token_data['access_token']}"},
+            headers={
+                "Authorization": f"Bearer {token_data['access_token']}",
+                "Client-Id": CLIENT_ID
+            }
         )
         user_response.raise_for_status()
         user_data = user_response.json()
+
 
         # Ensure user data contains the required fields
         if "data" not in user_data or not user_data["data"]:
@@ -93,6 +97,7 @@ def auth_twitch_callback():
 
         # Store the user ID in the session
         session["user_id"] = user.id
+        session["username"] = user_info["display_name"]  # Add this line to store the username
         db_session.close()
 
     except requests.exceptions.RequestException as e:
@@ -396,7 +401,7 @@ def stop_giveaway(giveaway_id):
 def winnings():
     user_username = session.get("username")
     if not user_username:
-        return redirect("/auth/twitch")
+        return redirect("/auth/twitch")  # Redirect only if the username is not set
 
     db_session = SessionLocal()
     winnings = (

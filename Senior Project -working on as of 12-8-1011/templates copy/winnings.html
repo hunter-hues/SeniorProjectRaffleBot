@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Winnings</title>
+</head>
+<body>
+    <h1>Your Winnings</h1>
+    <ul>
+        {% for item in winnings %}
+        <li>
+            Item: "{{ item.name }}"
+            {% if item.code %} - Code: {{ item.code }} {% endif %}
+            - Winner: {{ item.winner_username }}
+        </li>
+        {% else %}
+        <li>You have no winnings yet.</li>
+        {% endfor %}
+    </ul>            
+    <button>
+        <a href="/dashboard">Back to Dashboard</a>
+    </button>
+</body>
+</html>

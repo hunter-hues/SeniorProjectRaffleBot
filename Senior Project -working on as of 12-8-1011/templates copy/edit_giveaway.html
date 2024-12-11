@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Giveaway</title>
+</head>
+<body>
+    <h1>Edit Giveaway</h1>
+    <form method="POST" action="/giveaway/edit/{{ giveaway.id }}">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="{{ giveaway.title }}" required><br><br>
+
+        <label for="frequency">Frequency (seconds):</label>
+        <input type="number" id="frequency" name="frequency" value="{{ giveaway.frequency }}" required><br><br>
+
+        <label for="threshold">Threshold (empty rounds before ending):</label>
+        <input type="number" id="threshold" name="threshold" value="{{ giveaway.threshold }}" required><br><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <h2>Items</h2>
+    <ul>
+        {% for item in giveaway.items or [] %}
+        <li>
+            {{ item.name }} ({{ item.code or "No code" }}) 
+            - {% if item.is_won %} Won by: {{ item.winner_username }} {% else %} Not won yet {% endif %}
+            <button onclick="removeItem('{{ item.id }}')">Remove</button>
+        </li>
+        {% else %}
+        <li>No items added yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Add a New Item</h3>
+    <form method="POST" action="/giveaway/add-item/{{ giveaway.id }}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="code">Code:</label>
+        <input type="text" id="code" name="code"><br><br>
+
+        <button type="submit">Add Item</button>
+    </form>
+
+    <a href="/dashboard">Back to Dashboard</a>
+
+    <script>
+        function removeItem(itemId) {
+            fetch(`/giveaway/remove-item/${itemId}`, {
+                method: "POST",
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert("Failed to remove the item.");
+                }
+            })
+            .catch(error => {
+                console.error("Error removing the item:", error);
+                alert("An error occurred while trying to remove the item.");
+            });
+        }
+    </script>
+</body>
+</html>
